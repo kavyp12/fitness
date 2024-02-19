@@ -1,0 +1,17 @@
+{% extends 'authentication/base.html' %}
+
+{% block title %}
+Step Count
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h1>Step Count</h1>
+    <div class="step-count">
+        <p id="step-count-display">Total Step Count: {{ total_steps }}</p>
+        <p id="calories-display">Calories Burned: {{ calories_burned }}</p>
+        <button id="refresh-btn" onclick="window.location.reload();">Refresh</button>
+    </div>
+</div>
+
+{% endblock content %}

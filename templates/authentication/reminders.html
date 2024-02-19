@@ -1,0 +1,21 @@
+<!-- reminders.html -->
+
+{% extends 'authentication/base.html' %}
+
+{% block title %}
+Reminders
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h1>Reminders</h1>
+    {% for reminder in reminders %}
+    <div style="border:1px solid #000; margin:10px; padding:10px;">
+        <p>Step Goal: {{ reminder.step_goal }}</p>
+        <p>Calories Goal: {{ reminder.calories_goal }}</p>
+        <p>Reminder Time: {{ reminder.reminder_time }}</p>
+        <p>Reminder Day: {{ reminder.reminder_day }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}
