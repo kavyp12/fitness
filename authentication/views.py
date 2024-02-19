@@ -25,6 +25,11 @@ from oauth2client.client import Credentials
 import datetime, time
 import google.oauth2.credentials
 from .models import Reminder
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.urls import reverse
+
 
 
 
@@ -277,11 +282,13 @@ def step(request):
                         # Handle the case where 'value' is a list
                         for value_dict in point.get('value', []):
                             step_count = value_dict.get('intVal', 0)
+                            print("Step count:", step_count)  # Add this line for debugging
                             StepCount.objects.create(user=request.user, date=today, step_count=step_count)
                             total_steps += step_count
                     elif isinstance(point.get('value'), dict):
                         # Handle the case where 'value' is a dictionary
                         step_count = point.get('value', {}).get('intVal', 0)
+                        print("Step count:", step_count)  # Add this line for debugging
                         StepCount.objects.create(user=request.user, date=today, step_count=step_count)
                         total_steps += step_count
                 else:
@@ -294,6 +301,7 @@ def step(request):
     except Exception as e: 
         # Log the exception for debugging
         logger.exception("Error fetching/processing data")
+          
 
         # Replace with your desired error handling
         return render(request, 'authentication/error_page.html', {'error_message': str(e)})
@@ -303,33 +311,10 @@ from django.shortcuts import render
 def error_page(request):
     return render(request, 'authentication/error_page.html')
 
-@login_required
-def dailyset(request):
-    user = request.user
-    if request.method == 'POST':
-        # Retrieve form data
-        step_goal = request.POST.get('step_goal')
-        calories_goal = request.POST.get('calories_goal')
-        reminder_time = request.POST.get('reminder_time')
-        reminder_day = request.POST.get('reminder_day')
 
-        # Create new Reminder
-        new_reminder = Reminder(
-            user=user, 
-            step_goal=step_goal, 
-            calories_goal=calories_goal, 
-            reminder_time=reminder_time, 
-            reminder_day=reminder_day
-        )
-        new_reminder.save()
-
-        messages.success(request, "Daily reminder set successfully!")
-        return redirect('reminders')
-
-    return render(request, 'authentication/dailyset.html')
-
-
-from django.urls import reverse
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 @login_required
 def dailyset(request):
@@ -345,6 +330,72 @@ def dailyset(request):
         if not (step_goal and calories_goal and reminder_time and reminder_day):
             messages.error(request, "All fields are required!")
             return redirect('dailyset')
+
+        # Check step count for the reminder's day directly from Google Fit API
+        try:
+            # Retrieve credentials from session
+            token_dict = request.session.get('googlefit_credentials')
+
+            if not token_dict:
+                return redirect('googlefit_auth')
+
+            # Create Credentials object
+            credentials = google.oauth2.credentials.Credentials.from_authorized_user_info(token_dict)
+
+            # Build the Google Fit API service
+            fit_service = build('fitness', 'v1', credentials=credentials)
+
+            # Retrieve step count data from Google Fit API for today
+            today = datetime.datetime.strptime(reminder_day, '%Y-%m-%d').date()
+            midnight = datetime.datetime.combine(today, datetime.time())
+            midnight_next_day = midnight + datetime.timedelta(days=1)
+
+            response = fit_service.users().dataset().aggregate(
+                userId='me',
+                body={
+                    "aggregateBy": [{
+                        "dataTypeName": "com.google.step_count.delta",
+                        "dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
+                    }],
+                    "bucketByTime": {"durationMillis": 86400000},  # 1 day
+                    "startTimeMillis": int(time.mktime(midnight.timetuple())) * 1000,
+                    "endTimeMillis": int(time.mktime(midnight_next_day.timetuple())) * 1000,
+                }
+            ).execute()
+
+            if isinstance(response, dict):
+                step_count_data = response.get('bucket', [])
+                if not step_count_data:
+                    raise Exception('No step data available')
+                try:
+                    latest_dataset = step_count_data[0].get('dataset', [None])[0]
+                    if latest_dataset is not None:
+                        latest_point = latest_dataset.get('point', [None])[0]
+                        if latest_point is not None:
+                            latest_value = latest_point.get('value', [])
+                            latest_step_count = 0
+                            if latest_value:
+                                latest_step_count = latest_value[0].get('intVal', 0)
+                            if latest_step_count < int(step_goal):
+                                # Step count is below the goal, send email notification
+                                subject = 'Step Count Reminder'
+                                context = {
+                                    'step_goal': step_goal,
+                                    'step_count': latest_step_count,
+                                }
+                                html_message = render_to_string('authentication/step_count_email.html', context)
+                                plain_message = strip_tags(html_message)
+                                from_email = 'kavypatel255@gmail.com'  # Update with your email address
+                                to_email = user.email
+                                send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
+                except KeyError:
+                    logger.exception("Bad structure format in the data returned by the API")
+        except Exception as e: 
+            # Log the exception for debugging
+            logger.exception("Error fetching/processing data")
+
+            # Replace with your desired error handling
+            return render(request, 'authentication/error_page.html', {'error_message': str(e)})
 
         # Create new Reminder
         new_reminder = Reminder.objects.create(
@@ -362,6 +413,8 @@ def dailyset(request):
     return render(request, 'authentication/dailyset.html')
 
 
+
+
 @login_required
 def reminders(request):
     user = request.user
@@ -371,4 +424,5 @@ def reminders(request):
     return render(request, 'authentication/reminders.html', context)
 
 
-
+def step_count_email(request):
+    return render(request, 'authentication/step_count_email.html')

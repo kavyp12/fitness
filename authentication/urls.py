@@ -14,6 +14,7 @@ urlpatterns = [
     path('error_page/', views.error_page, name='error_page'),
     path('dailyset/', views.dailyset, name='dailyset'),
     path('reminders/', views.reminders, name='reminders'),
+    path('step_count_email/', views.step_count_email, name='step_count_email'),
 ]
 
 

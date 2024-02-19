@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'kavypatel255@gmail.com'
-EMAIL_HOST_PASSWORD = ''  # Add your email password here
+EMAIL_HOST_PASSWORD = 'arvpsghuyrhcjkrx'  # Add your email password here
 EMAIL_PORT = 587
 
 # Quick-start development settings - unsuitable for production
