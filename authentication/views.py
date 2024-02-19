@@ -371,5 +371,4 @@ def reminders(request):
     return render(request, 'authentication/reminders.html', context)
 
 
-print("hello world")
 
