@@ -1,0 +1,21 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Congratulations</title>
+</head>
+
+<body>
+    <h1>Congratulations!</h1>
+    <p>You've reached your daily step goal. Here's what you've accomplished today:</p>
+    <ul>
+        <li>Step goal: {{ step_goal }}</li>
+        <li>Steps taken today: {{ step_count }}</li>
+    </ul>
+    <p>Keep it up!</p>
+</body>
+
+</html>

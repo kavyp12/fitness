@@ -15,6 +15,8 @@ urlpatterns = [
     path('dailyset/', views.dailyset, name='dailyset'),
     path('reminders/', views.reminders, name='reminders'),
     path('step_count_email/', views.step_count_email, name='step_count_email'),
+    path('congrats/', views.congrats, name='congrats'),
+
 ]
 
 

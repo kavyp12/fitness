@@ -367,29 +367,36 @@ def dailyset(request):
                 step_count_data = response.get('bucket', [])
                 if not step_count_data:
                     raise Exception('No step data available')
-                try:
-                    latest_dataset = step_count_data[0].get('dataset', [None])[0]
-                    if latest_dataset is not None:
-                        latest_point = latest_dataset.get('point', [None])[0]
-                        if latest_point is not None:
-                            latest_value = latest_point.get('value', [])
-                            latest_step_count = 0
-                            if latest_value:
-                                latest_step_count = latest_value[0].get('intVal', 0)
-                            if latest_step_count < int(step_goal):
-                                # Step count is below the goal, send email notification
+                latest_dataset = step_count_data[0].get('dataset', [None])[0]
+                if latest_dataset is not None:
+                    latest_point = latest_dataset.get('point', [None])[0]
+                    if latest_point is not None:
+                        latest_value = latest_point.get('value', [])
+                        latest_step_count = 0
+                        if latest_value:
+                            latest_step_count = latest_value[0].get('intVal', 0)
+                            
+                            if latest_step_count >= int(step_goal):
+                                # Step count is equal or greater than the goal, send congratulatory email
+                                subject = 'Congratulations!'
+                                context = {
+                                    'step_goal': step_goal,
+                                    'step_count': latest_step_count,
+                                }
+                                html_message = render_to_string('authentication/congrats.html', context)
+                            else:
+                                # Step count is below the goal, send reminder email
                                 subject = 'Step Count Reminder'
                                 context = {
                                     'step_goal': step_goal,
                                     'step_count': latest_step_count,
                                 }
                                 html_message = render_to_string('authentication/step_count_email.html', context)
-                                plain_message = strip_tags(html_message)
-                                from_email = 'kavypatel255@gmail.com'  # Update with your email address
-                                to_email = user.email
-                                send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
-                except KeyError:
-                    logger.exception("Bad structure format in the data returned by the API")
+                                
+                            plain_message = strip_tags(html_message)
+                            from_email = 'kavypatel255@gmail.com'  # Update with your email address
+                            to_email = user.email
+                            send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
         except Exception as e: 
             # Log the exception for debugging
             logger.exception("Error fetching/processing data")
@@ -414,7 +421,6 @@ def dailyset(request):
 
 
 
-
 @login_required
 def reminders(request):
     user = request.user
@@ -426,3 +432,6 @@ def reminders(request):
 
 def step_count_email(request):
     return render(request, 'authentication/step_count_email.html')
+
+def congrats(request):  
+    return render(request, 'authentication/congrats.html')    
