@@ -208,6 +208,7 @@ import datetime  # Assuming you'll need the date module
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from oauth2client.client import Credentials
+from gfg.task import send_step_count_email
 
 #corect the below code 
 
@@ -331,7 +332,6 @@ def dailyset(request):
             messages.error(request, "All fields are required!")
             return redirect('dailyset')
 
-        # Check step count for the reminder's day directly from Google Fit API
         try:
             # Retrieve credentials from session
             token_dict = request.session.get('googlefit_credentials')
@@ -397,6 +397,10 @@ def dailyset(request):
                             from_email = 'kavypatel255@gmail.com'  # Update with your email address
                             to_email = user.email
                             send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
+                            
+                            # Schedule the reminder email using Celery
+                            send_step_count_email.apply_async((user.email, subject, 'authentication/step_count_email.html', context), eta=datetime.datetime.combine(today, datetime.datetime.strptime(reminder_time, '%H:%M').time()))
+
         except Exception as e: 
             # Log the exception for debugging
             logger.exception("Error fetching/processing data")
@@ -419,6 +423,7 @@ def dailyset(request):
 
     return render(request, 'authentication/dailyset.html')
 
+    
 
 
 @login_required
