@@ -6,6 +6,13 @@ Set Daily Reminder
 
 {% block content %}
 <div class="container">
+
+    <style>
+        .form-group {
+            color: white;
+        }
+    </style>
+
     <h1>Set Daily Reminder</h1>
     <form method="post">
         {% csrf_token %}
@@ -26,7 +33,6 @@ Set Daily Reminder
             <input type="date" class="form-control" id="reminder_day" name="reminder_day" required>
         </div>
         <button type="submit" class="btn btn-primary">Set Reminder</button>
-        
     </form>
 </div>
 {% endblock content %}

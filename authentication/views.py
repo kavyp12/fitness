@@ -29,6 +29,24 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.urls import reverse
+import threading
+import schedule
+import time
+from datetime import datetime
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+import datetime
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.date import DateTrigger
+from pytz import timezone
+from django.shortcuts import redirect, render
+from django.contrib import messages
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.utils.html import strip_tags
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
 
 
@@ -208,7 +226,7 @@ import datetime  # Assuming you'll need the date module
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from oauth2client.client import Credentials
-from gfg.task import send_step_count_email
+
 
 #corect the below code 
 
@@ -313,13 +331,102 @@ def error_page(request):
     return render(request, 'authentication/error_page.html')
 
 
+
+import threading
+import schedule
+import time
+from datetime import datetime
+
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+import datetime
+
+import datetime
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.date import DateTrigger
+from pytz import timezone
+from django.shortcuts import redirect, render
+from django.contrib import messages
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.utils.html import strip_tags
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+
+@login_required
+def send_email(request, subject, html_message):
+    try:
+        # Send email
+        from_email = 'kavypatel255@gmail.com'  # Your email address
+        to_email = 'kavypatel183@gmail.com'  # The recipient's email address
+        send_mail(subject, strip_tags(html_message), from_email, [to_email], html_message=html_message)
+        return True
+    except Exception as e:
+        # Log the exception for debugging
+        logger.exception("Error sending email")
+        return False
+
+
+@login_required
+def check_step_count_and_send_email(request, step_goal, credentials, to_email):
+
+    # Build the Google Fit API service
+    fit_service = build('fitness', 'v1', credentials=credentials)
+    
+    today = datetime.date.today()
+    midnight = datetime.datetime.combine(today, datetime.time())
+    midnight_next_day = midnight + datetime.timedelta(days=1)
+
+    response = fit_service.users().dataset().aggregate(
+        userId='me',
+        body={
+            "aggregateBy": [{
+                "dataTypeName": "com.google.step_count.delta",
+                "dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
+            }],
+            "bucketByTime": {"durationMillis": 86400000},  # 1 day
+            "startTimeMillis": int(time.mktime(midnight.timetuple())) * 1000,
+            "endTimeMillis": int(time.mktime(midnight_next_day.timetuple())) * 1000,
+        }
+    ).execute()
+
+    step_count_data = response.get('bucket', [])
+
+    if step_count_data:
+        latest_dataset = step_count_data[0].get('dataset', [None])[0]
+        if latest_dataset:
+            latest_point = latest_dataset.get('point', [None])[0]
+            if latest_point:
+                latest_value = latest_point.get('value', [])
+                latest_step_count = 0
+                if latest_value:
+                    latest_step_count = latest_value[0].get('intVal', 0)
+                    subject = ''
+                    context = {
+                        'step_goal': step_goal,
+                        'step_count': latest_step_count,
+                    }
+                    if latest_step_count >= int(step_goal):
+                        # Step count is equal or greater than the goal, send congratulatory email
+                        subject = 'Congratulations!'
+                        html_message = render_to_string('authentication/congrats.html', context)
+                    else:
+                        # Step count is below the goal, send reminder email
+                        subject = 'Step Count Reminder'
+                        html_message = render_to_string('authentication/step_count_email.html', context)
+                    
+                    # Send email using the send_email function
+                    if send_email(request, subject, html_message):
+                        messages.success(request, "Email sent successfully!")
+                    else:
+                        messages.error(request, "Failed to send email.")
+            else:
+                raise Exception('No step data available')
+
 
 @login_required
 def dailyset(request):
-    user = request.user
     if request.method == 'POST':
         # Retrieve form data
         step_goal = request.POST.get('step_goal')
@@ -332,85 +439,25 @@ def dailyset(request):
             messages.error(request, "All fields are required!")
             return redirect('dailyset')
 
-        try:
-            # Retrieve credentials from session
-            token_dict = request.session.get('googlefit_credentials')
+        # Retrieve credentials from session
+        token_dict = request.session.get('googlefit_credentials')
 
-            if not token_dict:
-                return redirect('googlefit_auth')
+        if not token_dict:
+            return redirect('googlefit_auth')  # Assuming this route is your authentication route for your Google Fit API
 
-            # Create Credentials object
-            credentials = google.oauth2.credentials.Credentials.from_authorized_user_info(token_dict)
+        # Create Credentials object
+        credentials = Credentials.from_authorized_user_info(token_dict)
 
-            # Build the Google Fit API service
-            fit_service = build('fitness', 'v1', credentials=credentials)
-
-            # Retrieve step count data from Google Fit API for today
-            today = datetime.datetime.strptime(reminder_day, '%Y-%m-%d').date()
-            midnight = datetime.datetime.combine(today, datetime.time())
-            midnight_next_day = midnight + datetime.timedelta(days=1)
-
-            response = fit_service.users().dataset().aggregate(
-                userId='me',
-                body={
-                    "aggregateBy": [{
-                        "dataTypeName": "com.google.step_count.delta",
-                        "dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
-                    }],
-                    "bucketByTime": {"durationMillis": 86400000},  # 1 day
-                    "startTimeMillis": int(time.mktime(midnight.timetuple())) * 1000,
-                    "endTimeMillis": int(time.mktime(midnight_next_day.timetuple())) * 1000,
-                }
-            ).execute()
-
-            if isinstance(response, dict):
-                step_count_data = response.get('bucket', [])
-                if not step_count_data:
-                    raise Exception('No step data available')
-                latest_dataset = step_count_data[0].get('dataset', [None])[0]
-                if latest_dataset is not None:
-                    latest_point = latest_dataset.get('point', [None])[0]
-                    if latest_point is not None:
-                        latest_value = latest_point.get('value', [])
-                        latest_step_count = 0
-                        if latest_value:
-                            latest_step_count = latest_value[0].get('intVal', 0)
-                            
-                            if latest_step_count >= int(step_goal):
-                                # Step count is equal or greater than the goal, send congratulatory email
-                                subject = 'Congratulations!'
-                                context = {
-                                    'step_goal': step_goal,
-                                    'step_count': latest_step_count,
-                                }
-                                html_message = render_to_string('authentication/congrats.html', context)
-                            else:
-                                # Step count is below the goal, send reminder email
-                                subject = 'Step Count Reminder'
-                                context = {
-                                    'step_goal': step_goal,
-                                    'step_count': latest_step_count,
-                                }
-                                html_message = render_to_string('authentication/step_count_email.html', context)
-                                
-                            plain_message = strip_tags(html_message)
-                            from_email = 'kavypatel255@gmail.com'  # Update with your email address
-                            to_email = user.email
-                            send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
-                            
-                            # Schedule the reminder email using Celery
-                            send_step_count_email.apply_async((user.email, subject, 'authentication/step_count_email.html', context), eta=datetime.datetime.combine(today, datetime.datetime.strptime(reminder_time, '%H:%M').time()))
-
-        except Exception as e: 
-            # Log the exception for debugging
-            logger.exception("Error fetching/processing data")
-
-            # Replace with your desired error handling
-            return render(request, 'authentication/error_page.html', {'error_message': str(e)})
-
+        # Schedule the check_step_count_and_send_email, so it will check the step count at the reminder_time and send an email accordingly
+        run_date = datetime.datetime.combine(datetime.datetime.today(), datetime.datetime.strptime(reminder_time, '%H:%M').time())
+        
+        scheduler = BackgroundScheduler()
+        scheduler.start()
+        scheduler.add_job(lambda: check_step_count_and_send_email(request, step_goal, credentials, 'to_email@gmail.com'), DateTrigger(run_date=run_date))
+        
         # Create new Reminder
         new_reminder = Reminder.objects.create(
-            user=user, 
+            user=request.user, 
             step_goal=step_goal, 
             calories_goal=calories_goal, 
             reminder_time=reminder_time, 
@@ -422,10 +469,6 @@ def dailyset(request):
         return redirect(reverse('admin:authentication_reminder_changelist'))
 
     return render(request, 'authentication/dailyset.html')
-
-    
-
-
 @login_required
 def reminders(request):
     user = request.user
