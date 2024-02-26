@@ -336,12 +336,9 @@ import threading
 import schedule
 import time
 from datetime import datetime
-
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-import datetime
-
 import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.date import DateTrigger
