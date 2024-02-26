@@ -49,15 +49,9 @@
           <li><a class="nav-link scrollto" href="#about">About</a></li>
           <li><a class="nav-link scrollto" href="/step">steps</a></li>
 
-          <li><a class="nav-link scrollto" href="#team">Team</a></li>
-          <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
-            <ul>
-              <li><a href="#">Enroll</a></li>
-    
-              <li><a href="#">view profile</a></li>
-              <li><a href="#">tracker</a></li>
-              <li><a href="#">view profile</a></li>
-            </ul>
+          <li><a class="nav-link scrollto" href="/dailyset">Daily Reminder</a></li>
+          
+          
           </li>
           
           {% if not request.user.is_authenticated %}
@@ -133,39 +127,36 @@
   <main id="main">
 
     <!-- ======= About Section ======= -->
-    {% comment %} <section id="about" class="about">
+    <section id="about" class="about">
       <div class="container" data-aos="fade-up">
-
         <div class="row">
           <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-left" data-aos-delay="100">
-            <img src="static/assets/img/about.jpg" class="img-fluid" alt="">
+            <img src="static/assets/img/about us gym.jpg" class="img-fluid" alt="About Us Image">
           </div>
           <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content" data-aos="fade-right" data-aos-delay="100">
-            <h3>Voluptatem dignissimos provident quasi corporis voluptates sit assumenda.</h3>
-            <p class="fst-italic">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-              magna aliqua.
+            <h2>About Us</h2>
+            <p>
+              Welcome to fitness site, your ultimate destination for fitness and wellness enthusiasts. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </p>
+        
             <ul>
-              <li><i class="ri-check-double-line"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
-              <li><i class="ri-check-double-line"></i> Duis aute irure dolor in reprehenderit in voluptate velit.</li>
-              <li><i class="ri-check-double-line"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</li>
+              <li><i class="ri-check-double-line"></i> Expert Guidance: Our team of experienced fitness professionals is dedicated to helping you reach your goals.</li>
+              <li><i class="ri-check-double-line"></i> Personalized Programs: We understand that everyone's fitness journey is unique, which is why we offer customized workout plans and nutrition advice tailored to your needs.</li>
+              <li><i class="ri-check-double-line"></i> Supportive Community: Join our community of like-minded individuals who are committed to supporting and motivating each other every step of the way.</li>
             </ul>
             <p>
-              Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident
+              Whether you're just starting your fitness journey or looking to take your workouts to the next level, we're here to help you succeed. Join us today and take the first step towards a healthier, happier you!
             </p>
           </div>
         </div>
-
       </div>
-    </section><!-- End About Section --> {% endcomment %}
+    </section>
 
-    {% comment %} <!-- ======= Clients Section ======= -->
+    <!-- ======= Clients Section ======= -->
     <section id="clients" class="clients">
       <div class="container" data-aos="zoom-in">
 
-        <div class="clients-slider swiper">
+        {% comment %} <div class="clients-slider swiper">
           <div class="swiper-wrapper align-items-center">
             <div class="swiper-slide"><img src="static/assets/img/clients/client-1.png" class="img-fluid" alt=""></div>
             <div class="swiper-slide"><img src="static/assets/img/clients/client-2.png" class="img-fluid" alt=""></div>
@@ -177,7 +168,7 @@
             <div class="swiper-slide"><img src="static/assets/img/clients/client-8.png" class="img-fluid" alt=""></div>
           </div>
           <div class="swiper-pagination"></div>
-        </div>
+        </div> {% endcomment %}
 
       </div>
     </section><!-- End Clients Section -->
@@ -187,36 +178,36 @@
       <div class="container" data-aos="fade-up">
 
         <div class="row">
-          <div class="image col-lg-6" style='background-image: url("static/assets/img/features.jpg");' data-aos="fade-right"></div>
+          <div class="image col-lg-6" style='background-image: url("static/assets/img/second_about.jpg");' data-aos="fade-right"></div>
           <div class="col-lg-6" data-aos="fade-left" data-aos-delay="100">
             <div class="icon-box mt-5 mt-lg-0" data-aos="zoom-in" data-aos-delay="150">
               <i class="bx bx-receipt"></i>
-              <h4>Est labore ad</h4>
-              <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
-            </div>
-            <div class="icon-box mt-5" data-aos="zoom-in" data-aos-delay="150">
-              <i class="bx bx-cube-alt"></i>
-              <h4>Harum esse qui</h4>
-              <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt</p>
-            </div>
-            <div class="icon-box mt-5" data-aos="zoom-in" data-aos-delay="150">
-              <i class="bx bx-images"></i>
-              <h4>Aut occaecati</h4>
-              <p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus ut maiores omnis facere</p>
-            </div>
-            <div class="icon-box mt-5" data-aos="zoom-in" data-aos-delay="150">
-              <i class="bx bx-shield"></i>
-              <h4>Beatae veritatis</h4>
-              <p>Expedita veritatis consequuntur nihil tempore laudantium vitae denat pacta</p>
+          <h4>Our Mission</h4>
+          <p>At fitness site, our mission is to empower individuals to lead healthier lives by providing expert guidance, personalized programs, and a supportive community.</p>
+        </div>
+        <div class="icon-box mt-5" data-aos="zoom-in" data-aos-delay="150">
+          <i class="bx bx-cube-alt"></i>
+          <h4>Why Choose Us</h4>
+          <p>With our team of experienced professionals, personalized programs, and supportive community, fitness site is your ultimate partner in reaching your fitness goals.</p>
+        </div>
+        <div class="icon-box mt-5" data-aos="zoom-in" data-aos-delay="150">
+          <i class="bx bx-images"></i>
+          <h4>Our Vision</h4>
+          <p>We envision a world where everyone has access to the resources and support they need to achieve their fitness goals and live their best lives.</p>
+        </div>
+        <div class="icon-box mt-5" data-aos="zoom-in" data-aos-delay="150">
+          <i class="bx bx-shield"></i>
+          <h4>Our Values</h4>
+          <p>At [Your Fitness Website Name], we are committed to integrity, excellence, and continuous improvement in everything we do to help our community thrive.</p>
             </div>
           </div>
         </div>
 
       </div>
-    </section><!-- End Features Section --> {% endcomment %}
-{% comment %} 
+    </section><!-- End Features Section -->
+
     <!-- ======= Services Section ======= -->
-    <section id="services" class="services">
+    {% comment %} <section id="services" class="services">
       <div class="container" data-aos="fade-up">
 
         <div class="section-title">
@@ -298,7 +289,7 @@
     <!-- End Contact Section -->
 
   </main><!-- End #main -->
-{% comment %} 
+
   <!-- ======= Footer ======= -->
   <footer id="footer">
     <div class="footer-top">
@@ -307,7 +298,7 @@
 
           <div class="col-lg-3 col-md-6">
             <div class="footer-info">
-              <h3>Gp<span>.</span></h3>
+          
               <p>
                 A108 Adam Street <br>
                 NY 535022, USA<br><br>
@@ -329,26 +320,16 @@
             <ul>
               <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Services</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Terms of service</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Privacy policy</a></li>
-            </ul>
-          </div>
-
-          <div class="col-lg-3 col-md-6 footer-links">
-            <h4>Our Services</h4>
-            <ul>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Web Design</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Web Development</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Product Management</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Marketing</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Graphic Design</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">steps</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">dailyreminder</a></li>
+              
             </ul>
           </div>
 
           <div class="col-lg-4 col-md-6 footer-newsletter">
-            <h4>Our Newsletter</h4>
-            <p>Tamen quem nulla quae legam multos aute sint culpa legam noster magna</p>
+            <h4>Join Our Fitness Community</h4>
+            <p>Join our community today to receive the latest updates, workout tips, nutrition advice, and more. Start your fitness journey with us!</p>
+        </div>
             <form action="" method="post">
               <input type="email" name="email"><input type="submit" value="Subscribe">
             </form>
@@ -361,9 +342,9 @@
 
     <div class="container">
       <div class="copyright">
-        &copy; Copyright <strong><span>Gp</span></strong>. All Rights Reserved
+        <strong><span>team feb4</span></strong>
       </div>
-      <div class="credits"> {% endcomment %}
+      <div class="credits">
         <!-- All the links in the footer should remain intact. -->
         <!-- You can delete the links only if you purchased the pro version. -->
         <!-- Licensing information: https://bootstrapmade.com/license/ -->
