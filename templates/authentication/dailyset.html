@@ -5,34 +5,194 @@ Set Daily Reminder
 {% endblock title %}
 
 {% block content %}
-<div class="container">
 
-    <style>
-        .form-group {
-            color: white;
-        }
-    </style>
+<style>
+    /* General Styles */
+body {
+  
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: white; /* Set text color to white */
+    
+ }
+.container { ... /* Your existing styles */ }
 
-    <h1>Set Daily Reminder</h1>
-    <form method="post">
-        {% csrf_token %}
+/* Card Styling */
+.card {
+  background-color: rgba(41, 41, 41, 0.4); /* Slightly darker background */
+backdrop-filter: blur(7px); /* Add a blur effect to the card */
+height:500px;
+border-radius: 10px; /* Rounded corners */
+width:650px;
+}
+
+/* Form Styles */
+.form-content {
+  padding: 20px; /* Additional padding inside the form area */
+  display:flex;
+  align-items:left;
+    justify-content:space-between;
+    flex-direction:column;
+    gap:10px;
+}
+
+.label {
+  font-medium text-base text-gray-400 dark:text-gray-300; 
+  margin-bottom: 5px;
+}
+
+.input {
+  height: 40px; /* Increase height */
+  border-radius: 8px; /* Rounded corners */
+  padding: 10px; 
+  /* ... other input styles */
+}
+
+/* Button Styles */
+.buttons {
+   text-align: right; /* Align buttons to the right */
+}
+
+.button {
+  padding: 10px 20px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}  
+
+.cancel-button { background-color: #444; color: #fff;}  
+.cancel-button:hover { background-color: #666; }
+
+.save-button { background-color: #007bff; color: #fff; } 
+.save-button:hover { background-color: #0056b3; }
+
+.primary-button { background-color: #008cba; color: #fff; } 
+.primary-button:hover { background-color: #006a9c; } 
+
+.custom{
+    color: white !important;
+    gap: 15px !important;
+    
+}
+
+.notfor{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+
+}
+.form-content {
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 16px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: space-between;
+
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+.form-input {
+    width: 50%;
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+.form-input:focus {
+    border: 2px solid black;
+}
+
+
+</style>
+
+<div class="container"> 
+
+  <h1 style="margin-bottom:20px;">Set Daily Reminder</h1>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="card"> 
+      <div class="p-6 flex flex-col items-center space-y-6">
+        <div class="flex items-center space-x-3">
+          <h2 class="text-2xl font-bold text-gray-300 dark:text-gray-200">          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 text-gray-300 dark:text-gray-400">
+            <path d="m6.5 6.5 11 11"></path>
+            <path d="m21 21-1-1"></path>
+            <path d="m3 3 1 1"></path>
+            <path d="m18 22 4-4"></path>
+            <path d="m2 6 4-4"></path>
+            <path d="m3 10 7-7"></path>
+            <path d="m14 21 7-7"></path>
+          </svg>  Fitness Reminder</h2>
+        </div>
+        <br>
+        <p class="text-base text-gray-200 dark:text-gray-300 custom">Set a reminder to workout and stay healthy</p>
+      </div>
+
+      {% comment %} <div class="form-content p-6 custom"> 
+        <div class="" > 
+          <label class="label" for="step_goal">Step goal:</label>
+          <input class="input" id="step_goal" name="step_goal" placeholder="Enter steps" type="number">
+        </div>
+        <div class="grid grid-cols-2 items-center gap-6">
+          <label class="label" for="calories_goal">Calories goal:</label>
+          <input class="input" id="calories_goal" name="calories_goal" placeholder="Enter calories" type="number">
+        </div>
+        <div class="grid grid-cols-2 items-center gap-6">
+          <label class="label" for="reminder_time">Time:</label>
+          <input class="input" id="reminder_time" name="reminder_time" placeholder="Enter time" type="time">
+        </div>
+        <div class="grid grid-cols-2 items-center gap-6">
+          <label class="label" for="reminder_day">Reminder Day:</label>
+          <input class="input" id="reminder_day" name="reminder_day" placeholder="Enter date" type="date"> 
+        </div>
+      </div> {% endcomment %}
+      <div class="form-content">
         <div class="form-group">
-            <label for="step_goal">Step Goal:</label>
-            <input type="number" class="form-control" id="step_goal" name="step_goal" required>
+            <label class="form-label" for="step_goal">Step goal:</label>
+            <input class="form-input" id="step_goal" name="step_goal" placeholder="Enter steps" type="number">
         </div>
         <div class="form-group">
-            <label for="calories_goal">Calories Goal:</label>
-            <input type="number" class="form-control" id="calories_goal" name="calories_goal" required>
+            <label class="form-label" for="calories_goal">Calories goal:</label>
+            <input class="form-input" id="calories_goal" name="calories_goal" placeholder="Enter calories" type="number">
         </div>
         <div class="form-group">
-            <label for="reminder_time">Reminder Time:</label>
-            <input type="time" class="form-control" id="reminder_time" name="reminder_time" required>
+            <label class="form-label" for="reminder_time">Time:</label>
+            <input class="form-input" id="reminder_time" name="reminder_time" placeholder="Enter time" type="time">
         </div>
         <div class="form-group">
-            <label for="reminder_day">Reminder Day:</label>
-            <input type="date" class="form-control" id="reminder_day" name="reminder_day" required>
+            <label class="form-label" for="reminder_day">Reminder Day:</label>
+            <input class="form-input" id="reminder_day" name="reminder_day" placeholder="Enter date" type="date">
         </div>
+    </div>
+    
+
+      <div class="buttons flex justify-center items-center p-6 notfor">
         <button type="submit" class="btn btn-primary">Set Reminder</button>
-    </form>
+    </div>
+    
+    </div>
+  </form>
+
 </div>
 {% endblock content %}
