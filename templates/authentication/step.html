@@ -24,30 +24,26 @@ Step Count
     font-size: 0.06cm; /* Adjust font size as needed */
     text-anchor: middle; /* Center the text within the circle */
   }
+
   .progress-circular  {
     transform: rotate(-90deg); /* Rotate the circle so that the progress starts from the top */
     transition: background-color 0.3s ease !important;
-    
   }
 </style>
-{% block content %}
-<div class="container" role="main" style="    background-color: rgba(41, 41, 41, 0.4) !important; 
-height:1050px;
-border-radius: 18px;
 
-backdrop-filter: blur(7px) !important; ">
+{% block content %}
+<div class="container" role="main" style="background-color: rgba(41, 41, 41, 0.4) !important;height:1050px;border-radius: 18px;backdrop-filter: blur(7px) !important;">
   <h1 role="heading" style="text-align: center; color: #FFFFFF;" aria-label="Step Count">Step Count</h1>
-  <div class="step-count" style="margin: 0 auto; text-align: center;">
-    <div class="progress-circular">
-      <svg viewBox="0 0 100 100">
-        <circle class="background" cx="50" cy="50" r="30" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" />
-        <circle class="foreground" cx="50" cy="50" r="0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 283" style="transform: rotate(-90deg);" />
-        <text class="value" x="50" y="50" dy=".5em" text-anchor="middle" fill="white" font-size="0.2cm">
-          <tspan>{{ total_steps }}</tspan>
-        </text>
+  <div class="step-count" style="margin: 0 auto;text-align: center;">
+    <div class="progress-circular" aria-label="Progress Circle showing Step Count" tabindex="0">
+      <svg viewBox="0 0 100 100" role="img" aria-labelledby="stepCountTitle" >
+        <title id="stepCountTitle">Step Count Indicator</title>
+        <circle class="background" cx="50" cy="50" r="30" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <circle class="foreground" cx="50" cy="50" r="30" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 283" stroke-dashoffset="283"/>
+        <text class="value" x="50" y="50" dy=".4em" text-anchor="middle" fill="white" font-size="0.2cm">{{ total_steps }}</text>
       </svg>
     </div>
-    <div id="data-container" style="text-align: center; margin-top: 20px;">
+    <div id="data-container" style="text-align: center;margin-top: 20px;" >
       <div class="calories-burned"
       style=" background-color: rgba(41, 41, 41, 0.4); 
       color: #fff; 
@@ -57,44 +53,56 @@ backdrop-filter: blur(7px) !important; ">
         display:flex;
         align-items:center;
         justify-content:center;
-      
         margin: auto; 
         max-width: 40%; margin-bottom: 10px;">
         <p id="calories-burned" style="margin:16px 0px !important;"  aria-label="Calories Burned: {{ calories_burned }}">Calories Burned: {{ calories_burned }}</p>
       </div>
       <br>
-      <button id="refresh-btn" style="background-color: rgba(41, 41, 41, 0.4); 
+      <button id="refresh-btn" type="button" 
+      style="background-color: rgba(41, 41, 41, 0.4); 
       color: #fff; 
       border: 2px solid #fff; 
-        border-radius: 8px; 
-        height:70px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        width:100px;
-      
-        margin: auto; 
-        max-width: 40%;" aria-label="Refresh">Refresh</button>
+      border-radius: 8px; 
+      height:70px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100px;
+      margin: auto; 
+      max-width: 40%;" aria-label="Refresh">Refresh</button>
     </div>
   </div>
 </div>
 
 <script>
-  let foregroundCircle = document.querySelector('.foreground');
-  let totalSteps = {{ total_steps }}; // Get total_steps from backend
-  let goalSteps = {{ goal_steps }}; // Get goal_steps from backend
-
-  function updateProgress() {
-    let percentComplete = (totalSteps / goalSteps) * 100;
-    let circumference = foregroundCircle.getTotalLength();
-    foregroundCircle.style.strokeDashoffset = circumference - (percentComplete / 100 * circumference);
+  window.onload = function() {
+    // Refresh the page every 4 seconds
+    setInterval(function(){ location.reload(); }, 4000); 
+  
+    let foregroundCircle = document.querySelector('.foreground');
+    let totalSteps =  {{ total_steps }}; // Get total_steps from your server-side code
+  
+    // Function to update progress
+    function updateProgress() {
+      let circumference = foregroundCircle.getTotalLength();
+      let strokeDashoffset = circumference - ((totalSteps / 10000) * circumference); // Assuming 10,000 steps as maximum
+      foregroundCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+      foregroundCircle.style.strokeDashoffset = strokeDashoffset;
+    }
+  
+    // Call the function to set the initial progress line
+    updateProgress(); 
+  
+    // Add event listener for the refresh button
+    let refreshBtn = document.getElementById('refresh-btn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', function(e) {
+        e.preventDefault(); 
+        location.reload(); 
+      }); 
+    } else {
+      console.log("Cannot find element with id 'refresh-btn' on the page");
+    }
   }
-
-  updateProgress(); // Call initially to set the progress line
-
-  // Add event listener for the refresh button
-  document.getElementById('refresh-btn').addEventListener('click', function() {
-    window.location.reload();
-  });
 </script>
 {% endblock content %}

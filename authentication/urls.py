@@ -18,6 +18,8 @@ urlpatterns = [
     path('step_count_email/', views.step_count_email, name='step_count_email'),
     path('congrats/', views.congrats, name='congrats'),
     path('delete_reminder/<int:reminder_id>/', views.delete_reminder, name='delete_reminder'),
+    # path('step/data/', views.step_data, name='step_data'),   # new URL for getting step data
+
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

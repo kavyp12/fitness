@@ -482,4 +482,4 @@ from .models import Reminder
 def delete_reminder(request, reminder_id):
     reminder_to_delete = Reminder.objects.get(id=reminder_id)
     reminder_to_delete.delete()
-    return redirect('reminders') 
+    return redirect('reminders')
