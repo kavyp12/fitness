@@ -96,24 +96,22 @@ def signup(request):
         myuser = User.objects.create_user(username, email, pass1)
         myuser.save()
         messages.success(request, "Your account has been successfully created")
-
-        subject = "Welcome to GFG - Django Login!"
-        message = f"Hello {myuser.username}!\nWelcome to GFG!\nThank you for visiting our website. We have also sent you a confirmation email, please confirm your email address.\n\nThank you.\nAnubhav Madhav"
-        from_email = settings.EMAIL_HOST_USER
-        to_list = [myuser.email]
-        send_mail(subject, message, from_email, to_list, fail_silently=True)
-
         return redirect('signin')
 
     return render(request, 'authentication/signup.html')
 
+from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.shortcuts import redirect
+
 @csrf_protect
 def signin(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        pass1 = request.POST['pass1']
+        username = request.POST.get('username')
+        password = request.POST.get('pass1')
 
-        user = authenticate(username=username, password=pass1)
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
@@ -121,10 +119,9 @@ def signin(request):
             return render(request, "authentication/index.html", {"fname": fname})
         else:
             messages.error(request, "Invalid credentials!")
-            return render(request, 'authentication/signin.html')
-
+    
+    # If authentication fails or if it's a GET request, render the signin.html template
     return render(request, 'authentication/signin.html')
-
 @csrf_protect
 def signout(request):
     logout(request)
@@ -440,12 +437,9 @@ def dailyset(request):
         token_dict = request.session.get('googlefit_credentials')
 
         if not token_dict:
-            return redirect('googlefit_auth')  # Assuming this route is your authentication route for your Google Fit API
-
-        # Create Credentials object
+            return redirect('googlefit_auth') 
         credentials = Credentials.from_authorized_user_info(token_dict)
 
-        # Schedule the check_step_count_and_send_email, so it will check the step count at the reminder_time and send an email accordingly
         run_date = datetime.datetime.combine(datetime.datetime.today(), datetime.datetime.strptime(reminder_time, '%H:%M').time())
         
         scheduler = BackgroundScheduler()
@@ -480,3 +474,12 @@ def step_count_email(request):
 
 def congrats(request):  
     return render(request, 'authentication/congrats.html')    
+
+
+from django.shortcuts import redirect
+from .models import Reminder
+
+def delete_reminder(request, reminder_id):
+    reminder_to_delete = Reminder.objects.get(id=reminder_id)
+    reminder_to_delete.delete()
+    return redirect('reminders') 

@@ -16,8 +16,7 @@ Login
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endfor %}
-        <form action="/signin" method="post">
-          {% csrf_token %}
+        <form action="/signin/" method="post">{% csrf_token %}  
           <div class="form-group">
             <input type="text" class="form-control mb-2" name="username" placeholder="Username" required>
           </div>
@@ -25,7 +24,7 @@ Login
             <input type="password" class="form-control mt-2" name="pass1" placeholder="Password" required>
           </div>
           <br>
-          <div class="d-grid gap-2">
+          <div class="d-grid gap-2"> 
             <button class="btn btn-light" type="submit">Login</button>
           </div>
         </form>

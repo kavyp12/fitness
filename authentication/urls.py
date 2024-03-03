@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('', views.home, name='home'),
     path('signup/', views.signup, name='signup'),  # Ensure trailing slashes for consistency
@@ -16,7 +17,8 @@ urlpatterns = [
     path('reminders/', views.reminders, name='reminders'),
     path('step_count_email/', views.step_count_email, name='step_count_email'),
     path('congrats/', views.congrats, name='congrats'),
+    path('delete_reminder/<int:reminder_id>/', views.delete_reminder, name='delete_reminder'),
 
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 

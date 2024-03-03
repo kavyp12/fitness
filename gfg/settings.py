@@ -4,12 +4,14 @@
 import os
 from pathlib import Path
 
+# APPEND_SLASH=True
+APPEND_SLASH=False
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-atrwia7n9xb9(!&k#3l-q+&ll^toqmw&qvx285uj+9(_c9v^88'
 
 DEBUG = True
-
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
@@ -17,7 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
+    'django.contrib.messages',  
     'django.contrib.staticfiles',
     'social_django',
     'gfg',
@@ -38,6 +40,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
+
+
 
 ROOT_URLCONF = 'gfg.urls'
 
@@ -131,7 +135,6 @@ SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_GOOGLE_OAUTH2_IGNORE_DEFAULT_SCOPE = True
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email','profile','https://www.googleapis.com/auth/fitness.activity.read']
 CORS_ALLOW_ALL_ORIGINS = True
-
 CORE_ORIGIN_ALLOW_ALL = True
 CORE_ALLOW_CREDENTIALS=True
 

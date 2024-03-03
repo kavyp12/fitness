@@ -14,7 +14,7 @@ SignUp
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             {% endfor %}
-            <form action="/signup" method="post">
+            <form action="/signup/" method="post">  <!-- Note the trailing slash -->
                 {% csrf_token %}
                 <div class="form-group">
                     <input type="text" class="form-control mb-2" name="username" placeholder="Username" required>
@@ -33,7 +33,7 @@ SignUp
                     <button class="btn btn-light" type="submit">Signup</button>
                 </div>
             </form>
-            <br><a href="/signin">Already User?</a>
+            <br><a href="/signin/">Already a user?</a> <!-- Note the trailing slash -->
         </div>
         <div class="col-md-3"></div>
     </div>
