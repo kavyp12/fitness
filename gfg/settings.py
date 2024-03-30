@@ -109,7 +109,9 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 #  i want to set india kolkata time
+# i want to set canada time zone
 
+# TiME_ZONE = 'Canada/Eastern'
 TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True

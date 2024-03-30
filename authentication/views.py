@@ -122,6 +122,7 @@ def signin(request):
     
     # If authentication fails or if it's a GET request, render the signin.html template
     return render(request, 'authentication/signin.html')
+    
 @csrf_protect
 def signout(request):
     logout(request)
@@ -483,3 +484,23 @@ def delete_reminder(request, reminder_id):
     reminder_to_delete = Reminder.objects.get(id=reminder_id)
     reminder_to_delete.delete()
     return redirect('reminders')
+
+
+
+def back(request):
+    return render(request, 'authentication/back.html')
+
+def biceps(request):
+    return render(request, 'authentication/biceps.html')    
+
+def triceps(request):
+    return render(request, 'authentication/triceps.html')
+
+def shoulder(request):
+    return render(request, 'authentication/shoulder.html')
+
+def chest(request):
+    return render(request, 'authentication/chest.html')
+
+
+
